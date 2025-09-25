@@ -1,9 +1,7 @@
-
 document.addEventListener("DOMContentLoaded", () => {
-  // ========= Utilidades =========
   const $ = (id) => {
     const el = document.getElementById(id);
-    if (!el) console.warn("⚠️ Falta el elemento con id:", id);
+    if (!el) console.warn("Falta el elemento con id:", id);
     return el;
   };
   const escapeHtml = (str) =>
@@ -12,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
 
-  // ========= Diccionarios / Tablas =========
   const palabrasreservadas = new Set([
     "program",
     "const",
@@ -172,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========= Prevalidación (errores estructurales) =========
   function prevalidar(codigo) {
     const errores = [];
-      
+
     // a) String sin cerrar / multilínea
     let enStr = false,
       lineaIni = 1,
@@ -215,9 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         msg: "Cadena sin cerrar (').",
       });
 
-      
-
-    // b) Comentarios sin cerrar (no anidados)
+    // b) Comentarios sin cerrar (no anidados) 
     function buscarSinCerrar(abrir, cerrar, nombre) {
       let idx = 0;
       while (true) {
@@ -245,12 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return errores;
   }
 
-  // ========= Tokenizador =========
   function tokenizar(codigo) {
     const tokens = [];
-    // Importante en números:
-    //  - Permite: 3, 3.0, 3., 3.14e-2
-    //  - No confunde rango 1..10 (usa lookahead negativo para la segunda '.')
     const tokenRE = new RegExp(
       [
         "(\\s+)", // 1: espacios
@@ -481,19 +472,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  // ========= Eventos UI =========
   $("btnAnalizar")?.addEventListener("click", () => {
     const codigo = $("codigo")?.value ?? "";
 
-    // 1) Prevalidar y mostrar en el cuadro rojo
     const errs = prevalidar(codigo);
     renderErrores(errs);
-    
-    // 2) Tokenizar normalmente
-    const tokens = tokenizar(codigo);
 
-    // 3) (NUEVO) También inyectar los errores de prevalidación como filas en la tabla
-    //    para que SIEMPRE los veas aunque no exista el #erroresBox en tu HTML
+    const tokens = tokenizar(codigo);
     if (errs.length) {
       for (const e of errs) {
         tokens.unshift({
@@ -566,7 +551,6 @@ end.`;
     const codigo = $("codigo")?.value ?? "";
     const tokens = tokenizar(codigo);
     const errs = prevalidar(codigo);
-    // (opcional) mete también las prevalidaciones en el archivo
     if (errs.length) {
       for (const e of errs) {
         tokens.unshift({
@@ -580,7 +564,7 @@ end.`;
       }
     }
     if (!tokens.length) {
-      alert("Primero analiza el código o asegúrate de que no esté vacío.");
+      alert("Primero analiza el código o asegúrate de que no esté vacío");
       return;
     }
     let content = "LINEA:COL\tTIPO\tLEXEMA\tNUMERO\tMENSAJE\n";
@@ -615,4 +599,3 @@ end.`;
     if (event.target === modal) modal.style.display = "none";
   });
 });
-
